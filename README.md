@@ -1,2 +1,3 @@
-# Odoo-ERP-Project
-Arquitectura ERP de Odoo para despliegue en VPS
+# Mi Proyecto
+
+Estructura inicial orientada a Infrastructure as Code (IaC).

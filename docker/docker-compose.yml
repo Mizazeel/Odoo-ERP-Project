@@ -1,0 +1,7 @@
+# docker-compose placeholder
+version: '3.8'
+services:
+  odoo:
+    build: ./services/odoo
+  nginx:
+    build: ./services/nginx
