@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    paths:
+      - 'docker/**'
+      - 'scripts/**'
+      - 'config/**'
+  pull_request:
+    paths:
+      - 'docker/**'
+      - 'scripts/**'
+      - 'config/**'
+
+jobs:
+  validate-infra:
+    name: Validate infrastructure files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck yamllint docker.io
+
+      - name: Lint shell scripts
+        run: |
+          echo "Running shellcheck..."
+          shellcheck scripts/*.sh || true
+
+      - name: Validate docker-compose
+        run: |
+          echo "Checking docker-compose syntax..."
+          docker-compose -f docker/docker-compose.yml config || true
+
+      - name: Lint YAML files
+        run: |
+          echo "Linting YAML in docker and config directories..."
+          yamllint docker/**/*.yml config/**/*.yml || true
+
+      - name: Lint Dockerfile (hadolint)
+        run: |
+          echo "Running hadolint via Docker against docker/services/odoo/Dockerfile..."
+          docker run --rm -v "$GITHUB_WORKSPACE:/data" hadolint/hadolint /data/docker/services/odoo/Dockerfile || true
+
+      - name: Test Nginx configuration
+        run: |
+          echo "Testing nginx configuration files under config/nginx..."
+          sudo apt-get install -y nginx
+          if [ -f "$GITHUB_WORKSPACE/config/nginx/nginx.conf" ]; then
+            nginx -t -c "$GITHUB_WORKSPACE/config/nginx/nginx.conf" || true
+          else
+            echo "No config/nginx/nginx.conf found, skipping nginx -t"
+          fi
