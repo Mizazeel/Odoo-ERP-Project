@@ -1,3 +1,3 @@
 # Mi Proyecto
 
-Estructura inicial orientada a Infrastructure as Code (IaC).
+Proyecto de implementación de Odoo con infraestructura como código (IaC).
