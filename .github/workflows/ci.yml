@@ -34,10 +34,10 @@ jobs:
           echo "Linting YAML in docker and config directories..."
           yamllint docker/**/*.yml config/**/*.yml || true
 
-      - name: Lint Dockerfile (hadolint)
-        run: |
-          echo "Running hadolint via Docker against docker/services/odoo/Dockerfile..."
-          docker run --rm -v "$GITHUB_WORKSPACE:/data" hadolint/hadolint /data/docker/services/odoo/Dockerfile
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3
+        with:
+          dockerfile: docker/services/odoo/Dockerfile
 
       - name: Test Nginx configuration
         run: |
