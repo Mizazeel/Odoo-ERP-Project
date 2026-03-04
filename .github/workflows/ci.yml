@@ -24,10 +24,10 @@ jobs:
           echo "Running shellcheck..."
           shellcheck scripts/*.sh
 
-      - name: Validate docker-compose
+      - name: Validate docker compose
         run: |
-          echo "Checking docker-compose syntax..."
-          docker-compose -f docker/docker-compose.yml config
+          echo "Checking docker compose syntax..."
+          docker compose -f docker/docker-compose.yml config
 
       - name: Lint YAML files
         run: |
