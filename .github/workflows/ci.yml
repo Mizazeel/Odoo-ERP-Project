@@ -3,16 +3,8 @@ name: CI
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'docker/**'
-      - 'scripts/**'
-      - 'config/**'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'docker/**'
-      - 'scripts/**'
-      - 'config/**'
 
 jobs:
   validate-infra:
