@@ -10,41 +10,18 @@ jobs:
   validate-infra:
     name: Validate infrastructure files
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y shellcheck yamllint
-
-      - name: Lint shell scripts
-        run: |
-          echo "Running shellcheck..."
-          shellcheck scripts/*.sh
-
-      - name: Validate docker compose
-        run: |
-          echo "Checking docker compose syntax..."
-          docker compose -f docker/docker-compose.yml config
-
-      - name: Lint YAML files
-        run: |
-          echo "Linting YAML in docker and config directories..."
-          yamllint docker/**/*.yml config/**/*.yml || true
-
-      - name: Lint Dockerfile
-        uses: hadolint/hadolint-action@v3
+        uses: actions/checkout@v4
         with:
-          dockerfile: docker/services/odoo/Dockerfile
+          fetch-depth: 0
 
-      - name: Test Nginx configuration
-        run: |
-          echo "Testing nginx configuration files under config/nginx..."
-          sudo apt-get install -y nginx
-          if [ -f "$GITHUB_WORKSPACE/config/nginx/nginx.conf" ]; then
-            nginx -t -c "$GITHUB_WORKSPACE/config/nginx/nginx.conf"
-          else
-            echo "No config/nginx/nginx.conf found, skipping nginx -t"
-          fi
+      - name: Super-Linter
+        uses: super-linter/super-linter@v8.2.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_DOCKERFILE: true
+          VALIDATE_SHELL_SH: true
+          VALIDATE_YAML: true
+          VALIDATE_JSON: true
